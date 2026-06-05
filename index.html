@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QuizVerse AI — Test Your Knowledge</title>
+<meta name="description" content="QuizVerse AI — a modern, futuristic quiz platform with categories, analytics, achievements and leaderboard." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<!-- Animated background -->
+<div class="bg-gradient"></div>
+<canvas id="particles"></canvas>
+<div id="spotlight"></div>
+<!-- Top Nav -->
+<header class="nav glass">
+  <div class="brand">
+    <div class="logo-mark"></div>
+    <div>
+      <div class="brand-name">QuizVerse <span class="ai-tag">AI</span></div>
+      <div class="brand-sub">Test. Track. Grow.</div>
+    </div>
+  </div>
+  <nav class="nav-links">
+    <button class="nav-link active" data-route="home">Home</button>
+    <button class="nav-link" data-route="dashboard">Dashboard</button>
+    <button class="nav-link" data-route="select">Quizzes</button>
+    <button class="nav-link" data-route="leaderboard">Leaderboard</button>
+    <button class="nav-link" data-route="bookmarks">Bookmarks</button>
+  </nav>
+  <div class="nav-tools">
+    <button id="soundToggle" class="icon-btn" title="Toggle sound">🔊</button>
+    <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
+  </div>
+</header>
+<main id="app">
+  <!-- HERO / HOME -->
+  <section class="view active" data-view="home">
+    <div class="hero">
+      <div class="hero-badge glass">✦ New • AI-personalized feedback</div>
+      <h1 class="hero-title">
+        <span class="grad-text">QuizVerse AI</span><br/>
+        Test Your Knowledge. <span class="grad-text-2">Track Your Growth.</span>
+      </h1>
+      <p class="hero-sub">A futuristic quiz platform with 25+ categories, real-time analytics, achievements, streaks and XP. Built for curious minds.</p>
+      <div class="hero-cta">
+        <button class="btn primary ripple" data-route="select">Start Quiz →</button>
+        <button class="btn ghost ripple" data-route="dashboard">Open Dashboard</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat glass"><div class="stat-num" id="heroQuizzes">0</div><div class="stat-label">Quizzes Taken</div></div>
+        <div class="stat glass"><div class="stat-num" id="heroAvg">0%</div><div class="stat-label">Average Score</div></div>
+        <div class="stat glass"><div class="stat-num" id="heroBest">0%</div><div class="stat-label">Best Score</div></div>
+        <div class="stat glass"><div class="stat-num" id="heroXP">0</div><div class="stat-label">XP · Lv <span id="heroLvl">1</span></div></div>
+      </div>
+    </div>
+  </section>
+  <!-- DASHBOARD -->
+  <section class="view" data-view="dashboard">
+    <div class="section-head">
+      <h2>Your Dashboard</h2>
+      <p>Performance overview, streaks and recent activity.</p>
+    </div>
+    <div class="grid-4">
+      <div class="card glass glow"><div class="card-label">Total Quizzes</div><div class="card-value" id="dashQuizzes">0</div></div>
+      <div class="card glass glow"><div class="card-label">Average Score</div><div class="card-value" id="dashAvg">0%</div></div>
+      <div class="card glass glow"><div class="card-label">Best Score</div><div class="card-value" id="dashBest">0%</div></div>
+      <div class="card glass glow"><div class="card-label">Streak 🔥</div><div class="card-value" id="dashStreak">0</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card glass">
+        <h3>Strongest & Weakest</h3>
+        <div class="row"><span>Strongest Category</span><strong id="dashStrong">—</strong></div>
+        <div class="row"><span>Weakest Category</span><strong id="dashWeak">—</strong></div>
+        <div class="row"><span>Avg Response Time</span><strong id="dashTime">—</strong></div>
+        <div class="row"><span>Level</span><strong>Lv <span id="dashLvl">1</span> · <span id="dashXP">0</span> XP</strong></div>
+        <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+      </div>
+      <div class="card glass">
+        <h3>Achievements</h3>
+        <div class="badges" id="badgesList"></div>
+      </div>
+    </div>
+    <div class="card glass">
+      <h3>Recent Activity</h3>
+      <div class="history" id="historyList"></div>
+    </div>
+  </section>
+  <!-- QUIZ SELECT -->
+  <section class="view" data-view="select">
+    <div class="section-head">
+      <h2>Choose Your Quiz</h2>
+      <p>Pick a category, difficulty and length. Daily challenge available 👇</p>
+    </div>
+    <div class="card glass daily">
+      <div>
+        <div class="card-label">Daily Challenge</div>
+        <div class="card-value" id="dailyTitle">Loading…</div>
+        <div class="muted">+50 bonus XP · 10 random questions</div>
+      </div>
+      <button class="btn primary ripple" id="startDaily">Play Daily</button>
+    </div>
+    <div class="controls">
+      <div class="control">
+        <label>Difficulty</label>
+        <div class="seg" id="difficultySeg">
+          <button data-val="easy" class="active">Easy</button>
+          <button data-val="medium">Medium</button>
+          <button data-val="hard">Hard</button>
+        </div>
+      </div>
+      <div class="control">
+        <label>Questions</label>
+        <div class="seg" id="countSeg">
+          <button data-val="5">5</button>
+          <button data-val="10" class="active">10</button>
+          <button data-val="15">15</button>
+          <button data-val="20">20</button>
+        </div>
+      </div>
+      <div class="control">
+        <label>Time / question</label>
+        <div class="seg" id="timeSeg">
+          <button data-val="15">15s</button>
+          <button data-val="30" class="active">30s</button>
+          <button data-val="60">60s</button>
+        </div>
+      </div>
+    </div>
+    <div class="cats" id="catGrid"></div>
+  </section>
+  <!-- QUIZ PLAY -->
+  <section class="view" data-view="quiz">
+    <div class="quiz-top glass">
+      <div class="quiz-meta">
+        <div class="pill" id="quizCatPill">Category</div>
+        <div class="pill diff" id="quizDiffPill">Easy</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="qIndex">Question 1 of 10</span>
+          <span id="qPct">0%</span>
+        </div>
+        <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-ring">
+          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" class="ring-bg"/><circle cx="18" cy="18" r="16" class="ring-fg" id="ringFg"/></svg>
+          <div class="timer-num" id="timerNum">30</div>
+        </div>
+      </div>
+    </div>
+    <div class="card glass quiz-card glow" id="quizCard">
+      <div class="q-header">
+        <div class="q-num" id="qNum">Q1</div>
+        <button class="icon-btn small" id="bookmarkBtn" title="Bookmark">☆</button>
+      </div>
+      <h2 class="q-text" id="qText">Question text…</h2>
+      <div class="options" id="options"></div>
+      <div class="quiz-actions">
+        <button class="btn ghost ripple" id="prevBtn">← Previous</button>
+        <button class="btn ghost ripple" id="skipBtn">Skip</button>
+        <button class="btn primary ripple" id="nextBtn">Next →</button>
+        <button class="btn danger ripple" id="submitBtn" style="display:none">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+  <!-- RESULTS -->
+  <section class="view" data-view="results">
+    <div class="results-head">
+      <h2>Your Results</h2>
+      <p id="aiFeedback" class="muted">—</p>
+    </div>
+    <div class="grid-2">
+      <div class="card glass score-card">
+        <div class="score-ring">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" class="sr-bg"/>
+            <circle cx="60" cy="60" r="52" class="sr-fg" id="scoreRing"/>
+          </svg>
+          <div class="score-center">
+            <div class="score-num" id="scoreNum">0%</div>
+            <div class="muted">Final Score</div>
+          </div>
+        </div>
+        <div class="badges" id="earnedBadges"></div>
+      </div>
+      <div class="card glass">
+        <h3>Breakdown</h3>
+        <div class="row"><span>Correct</span><strong class="ok" id="rCorrect">0</strong></div>
+        <div class="row"><span>Wrong</span><strong class="bad" id="rWrong">0</strong></div>
+        <div class="row"><span>Skipped</span><strong id="rSkipped">0</strong></div>
+        <div class="row"><span>Time Taken</span><strong id="rTime">0s</strong></div>
+        <div class="row"><span>XP Earned</span><strong id="rXP">+0</strong></div>
+        <div class="quiz-actions">
+          <button class="btn primary ripple" data-route="select">Play Again</button>
+          <button class="btn ghost ripple" data-route="dashboard">Dashboard</button>
+        </div>
+      </div>
+    </div>
+    <div class="card glass">
+      <h3>Review</h3>
+      <div class="review" id="reviewList"></div>
+    </div>
+  </section>
+  <!-- LEADERBOARD -->
+  <section class="view" data-view="leaderboard">
+    <div class="section-head"><h2>Leaderboard</h2><p>Your top local attempts.</p></div>
+    <div class="card glass">
+      <div class="leader" id="leaderList"></div>
+    </div>
+  </section>
+  <!-- BOOKMARKS -->
+  <section class="view" data-view="bookmarks">
+    <div class="section-head"><h2>Bookmarked Questions</h2><p>Saved for review.</p></div>
+    <div class="card glass">
+      <div class="review" id="bookmarkList"></div>
+    </div>
+  </section>
+</main>
+<canvas id="confetti"></canvas>
+<footer class="footer muted">Built for curious minds. © 2026 QuizVerse AI. All rights reserved.</footer>
+<script src="script.js"></script>
+</body>
+</html>
